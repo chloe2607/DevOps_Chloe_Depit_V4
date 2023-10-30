@@ -32,7 +32,6 @@ jobs:
       # Step 3: Build and test the project with Maven
       - name: Build and test with Maven
         run: mvn clean verify  # Replace with your actual build and test command
-        working-directory: TP2/simple-api
       #finally build your app with the latest command
       - name: Build and test with Maven
         run: mvn clean install
