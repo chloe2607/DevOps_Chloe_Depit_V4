@@ -1,6 +1,6 @@
 # DevOps_Chloe_Depit_V4
 
-1-1Dans un premier temps nous avons créeé un Dossier Database. Ce dossier contient un fichier Dockerfile qui contient les lignes suivantes : 
+#1-1Dans un premier temps nous avons créeé un Dossier Database. Ce dossier contient un fichier Dockerfile qui contient les lignes suivantes : 
 FROM postgres:14.1-alpine
 
 ENV POSTGRES_DB=db \
@@ -20,8 +20,8 @@ On a ensuite ajouter 2 scripts dans le dossier Database : CreateScheme.sql et In
 On a rebuild notre image et run denouveau pour vérifier que les scipts ont bien été exécutés. Et que les données sont bien présentes dans le conteneur.
 Pour que les données persistent et ne soient pas détruites à chaque fois qu’on redémarre la base de données, on va utiliser la ligne suivante : docker -v /var/lib/postgresql/data
 
-1-2 Multi-stage builds permet d’optimiser des fichiers Dockerfile et de les garder facilement lisible et pour pour faciliter leur maintenance.
-# Build : lorsque l’image est build 
+#1-2 Multi-stage builds permet d’optimiser des fichiers Dockerfile et de les garder facilement lisible et pour pour faciliter leur maintenance.
+Build : lorsque l’image est build 
 FROM maven:3.8.6-amazoncorretto-17 AS myapp-build : première étape de construction de l’image
 ENV MYAPP_HOME /opt/myapp : définition de la variable d’environnement MYAPP_HOME qui a pour valeur : /opt/myapp  pour spécifier le répertoire de bas de l’application
 WORKDIR $MYAPP_HOME : définit le répertoire de travail de l’image c’est-à-dire MYAPP_HOME 
@@ -29,7 +29,7 @@ COPY pom.xml . : copie le fichier ‘pom.xml’ vers le répertoire de travail a
 COPY src ./src : copie le répertoire ‘src’ vers le répertoire ‘src’ dans l’image Docker
 RUN mvn package -DskipTests : exécute la commande Maven pour construire le package de l'application en utilisant le fichier pom.xml
 
-# Run : losque que l’image est run
+ Run : losque que l’image est run
 FROM amazoncorretto:17
 ENV MYAPP_HOME /opt/myapp : Cette commande définit à nouveau la variable d'environnement MYAPP_HOME avec la valeur /opt/myapp.
 WORKDIR $MYAPP_HOME : Cette commande définit le répertoire de travail actuel de l'image à $MYAPP_HOME.
@@ -37,7 +37,7 @@ COPY --from=myapp-build $MYAPP_HOME/target/*.jar $MYAPP_HOME/myapp.jar : Cette c
 
 ENTRYPOINT java -jar myapp.jar : Cette commande définit la commande d'entrée de l'image Docker, spécifiant la commande à exécuter lorsque le conteneur est lancé. Dans ce cas, il exécute l'application Java en exécutant le fichier JAR myapp.jar à l'aide de la commande java -jar.
 
-1-3
+#1-3
 version: '3.7'
 
 services:
@@ -68,12 +68,13 @@ services:
 networks:
     app-network:
 
-1-5  
+#1-5  
 Je me suis mise dans le dossier qui contenait le conteneur de la base de données. J’ai fait les commandes : docker tag mydb chloe2607/my-database puis docker push chloe2607/my-database.
 J’ai refait ses commandes dans les dossiers qui contenaient le conteneur du back et celui du front. Leur tag respectif sont : my-back et my-front. 
 
-2-1. Un test container est un environnement d'exécution préconfiguré pour l'exécution de tests d'intégration ou de tests fonctionnels.
-2-2. Mon fichier main.yml contient les lignes suivantes :
+#2-1. Un test container est un environnement d'exécution préconfiguré pour l'exécution de tests d'intégration ou de tests fonctionnels.
+#2-2. Mon fichier main.yml contient les lignes suivantes :
+
 name: CI devops 2023
 on:
   push:
@@ -102,7 +103,8 @@ jobs:
        On exécute la commande mvn pour construire et tester le projet à l'aide de Maven. L'option -f spécifie le chemin vers le fichier pom.xml que Maven 
  doit utiliser pour le projet. L'option clean supprime les fichiers générés lors de la précédente construction. L'option install compile le projet et         installe les artefacts dans le référentiel local Maven.
 
-    2-3. On a utilisé la ligne suivante :  run: mvn -B verify sonar:sonar -Dsonar.projectKey=devops-v2-chloe-depit_chloe-depit -Dsonar.organization=devops-v2-chloe-depit -Dsonar.host.url=https://sonarcloud.io -Dsonar.login=${{ secrets.SONAR_TOCKEN }}  --file Backend_API/simple-api/simple-api-student/pom.xml
+    #2-3. On a utilisé la ligne suivante :  
+       run: mvn -B verify sonar:sonar -Dsonar.projectKey=devops-v2-chloe-depit_chloe-depit -Dsonar.organization=devops-v2-chloe-depit -Dsonar.host.url=https://sonarcloud.io -Dsonar.login=${{ secrets.SONAR_TOCKEN }}  --file Backend_API/simple-api/simple-api-student/pom.xml
     mvn :indique l'utilisation de l'outil Maven.
 -B : Cela active le mode batch, ce qui permet à Maven de fonctionner en mode non interactif et de désactiver la sortie colorée.
 -Dsonar.projectKey : Cela spécifie la clé du projet SonarQube.
