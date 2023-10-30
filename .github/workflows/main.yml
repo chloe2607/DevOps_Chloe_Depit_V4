@@ -20,4 +20,4 @@ jobs:
           distribution: 'adopt'
 
       - name: Build and test with Maven
-        run: mvn -f Backend_API/simpleapi/src/pom.xml clean install
+        run: mvn -f \Backend_API\simpleapi\pom.xml clean install
