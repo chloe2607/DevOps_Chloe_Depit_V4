@@ -1,38 +1,23 @@
-# Define the name of the workflow
 name: CI devops 2023
-
-# Specify the events that trigger the workflow
 on:
   push:
-    branches:
+    branches: 
       - main
       - develop
   pull_request:
 
-# Define the jobs to be executed as part of the workflow
 jobs:
-  # Define the 'test-backend' job
-  test-backend:
-    # Specify the runner environment for the job
+  test-backend: 
     runs-on: ubuntu-22.04
-
-    # List the steps to be executed within the job
     steps:
-      # Step 1: Check out the GitHub code using the 'actions/checkout' action
-      - name: Checkout your GitHub code
+      - name: Checkout code
         uses: actions/checkout@v2.5.0
 
-      # Step 2: Set up JDK 17 using the 'actions/setup-java' action
       - name: Set up JDK 17
-        uses: actions/setup-java@v3  # Use the appropriate version of actions/setup-java
-        with:
-          java-version: 17  # Specify the JDK version you want to use
-          distribution: 'adopt'  # Specify the distribution (e.g., 'adopt', 'adopt-lts', etc.)
+        uses: actions/setup-java@v3
+        with: 
+          java-version: '17'
+          distribution: 'adopt'
 
-      # Step 3: Build and test the project with Maven
       - name: Build and test with Maven
-        run: mvn clean verify  # Replace with your actual build and test command
-      #finally build your app with the latest command
-      - name: Build and test with Maven
-        run: mvn clean install
-        working-directory: Backend_API/simpleapi
+        run: mvn -f Backend_API/simpleapi/src/pom.xml clean install
