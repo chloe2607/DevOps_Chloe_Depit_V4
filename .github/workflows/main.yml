@@ -30,21 +30,25 @@ jobs:
     steps:
       - name: Checkout code
         uses: actions/checkout@v2.5.0
-
+      - name: Login to DockerHub
+        run: docker login -u ${{ secrets.DOCKERHUB_USERNAME }} -p ${{ secrets.DOCKERHUB_TOKEN }}
       - name: Build image and push backend
         uses: docker/build-push-action@v3
         with:
           context: Backend_API/simple-api/simple-api-student # relative path to the place where source code with Dockerfile is located
           tags: ${{ secrets.DOCKER_USERNAME }}/tp-devops/simple-api # Note: tags has to be all lower-case
+          push: ${{ github.ref == 'refs/heads/main' }}
 
       - name: Build image and push database
         uses: docker/build-push-action@v3
         with:
           context: Database # Replace with the relative path to the directory containing the Dockerfile for the database
           tags: ${{ secrets.DOCKER_USERNAME }}/tp-devops/database # Replace with appropriate tag name
+          push: ${{ github.ref == 'refs/heads/main' }}
 
       - name: Build image and push httpd
         uses: docker/build-push-action@v3
         with:
           context: Backend_API/simple-api/simple-api-student-front # Replace with the relative path to the directory containing the Dockerfile for httpd
           tags: ${{ secrets.DOCKER_USERNAME }}/tp-devops/httpd # Replace with appropriate tag name
+          push: ${{ github.ref == 'refs/heads/main' }}
