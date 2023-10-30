@@ -21,3 +21,30 @@ jobs:
 
       - name: Build and test with Maven
         run: mvn -f Backend_API/simple-api/simple-api-student clean install
+
+# define job to build and publish docker image
+  build-and-push-docker-image:
+    needs: test-backend # run only when code is compiling and tests are passing
+    runs-on: ubuntu-22.04
+
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v2.5.0
+
+      - name: Build image and push backend
+        uses: docker/build-push-action@v3
+        with:
+          context: ./Backend_API/simple-api/simple-api-student # relative path to the place where source code with Dockerfile is located
+          tags: ${{ secrets.DOCKER_USERNAME }}/tp-devops/simple-api # Note: tags has to be all lower-case
+
+      - name: Build image and push database
+        uses: docker/build-push-action@v3
+        with:
+          context: ./Database # Replace with the relative path to the directory containing the Dockerfile for the database
+          tags: ${{ secrets.DOCKER_USERNAME }}/tp-devops/database # Replace with appropriate tag name
+
+      - name: Build image and push httpd
+        uses: docker/build-push-action@v3
+        with:
+          context: ./Backend_API/simple-api/simple-api-student-front # Replace with the relative path to the directory containing the Dockerfile for httpd
+          tags: ${{ secrets.DOCKER_USERNAME }}/tp-devops/httpd # Replace with appropriate tag name
